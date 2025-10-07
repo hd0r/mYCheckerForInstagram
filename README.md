@@ -44,7 +44,6 @@ If a login is successful or requires a challenge, the account details (followers
     ```bash
     pip install -r requirements.txt
     ```
-    *(You will need to create a `requirements.txt` file, see below )*
 
 ## Configuration
 

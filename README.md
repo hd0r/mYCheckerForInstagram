@@ -36,7 +36,7 @@ If a login is successful or requires a challenge, the account details (followers
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-hd0r/mYCheckerForInstagram.git
+    git clone https://github.com/hd0r/mYCheckerForInstagram.git
     cd mYCheckerForInstagram
     ```
 
@@ -54,7 +54,7 @@ Before running the script, you need to set up the environment variables for Tele
     touch .env
     ```
 
-2.  **Add your Telegram Bot Token and Chat ID** to the `.env` file. You can get these from [@BotFather](https://t.me/BotFather ) and [@userinfobot](https://t.me/userinfobot ) on Telegram.
+2.  **Add your Telegram Bot Token and Chat ID** to the `.env` file. You can get these from [@BotFather](https://t.me/BotFather ) and @username_to_id_bot](https://t.me/username_to_id_bot ) on Telegram.
     ```env
     BOT_TOKEN="YOUR_TELEGRAM_BOT_TOKEN"
     CHAT_ID="YOUR_TELEGRAM_CHAT_ID"

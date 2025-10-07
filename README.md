@@ -60,13 +60,7 @@ Before running the script, you need to set up the environment variables for Tele
     CHAT_ID="YOUR_TELEGRAM_CHAT_ID"
     ```
 
-3.  **Create a `requirements.txt` file** with the following content:
-    ```
-    requests
-    python-dotenv
-    ```
-
-4.  **Prepare your username list**:
+3.  **Prepare your username list**:
     Create a file named `usernames.txt` and add the usernames you want to check, one per line.
     ```
     username1
